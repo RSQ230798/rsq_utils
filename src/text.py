@@ -1,5 +1,6 @@
-"""Text utilities for string manipulation and case conversion."""
 from typing import Dict, List, Union, Any
+
+JsonType = Union[Dict[str, Any], List[Any], str, int, float, bool, None]
 
 def camel_to_snake(text: str) -> str:
     """Convert CamelCase to snake_case.
@@ -33,8 +34,6 @@ def camel_to_snake(text: str) -> str:
             output += letter.lower()
     
     return output
-
-JsonType = Union[Dict[str, Any], List[Any], str, int, float, bool, None]
 
 def convert_keys_to_snake_case(data: JsonType) -> JsonType:
     """Recursively convert all dictionary keys from camelCase to snake_case.

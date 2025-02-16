@@ -3,6 +3,10 @@ from typing import Dict, List, Any, Union
 from urllib.parse import urljoin, urlencode, urlparse
 from itertools import product
 
+ParamValue = Union[str, int, float, bool]
+ParamDict = Dict[str, List[ParamValue]]
+
+# helper functions
 def is_valid_url(url: str) -> bool:
     """Check if a URL is valid.
     
@@ -51,9 +55,6 @@ def url_encode(base_url: str, params: Dict[str, Any]) -> str:
         
     sanitized_params = sanitize_params(params)
     return urljoin(base_url, f"?{urlencode(sanitized_params)}")
-
-ParamValue = Union[str, int, float, bool]
-ParamDict = Dict[str, List[ParamValue]]
 
 def generate_parameter_combos(parameters: ParamDict) -> List[Dict[str, ParamValue]]:
     """Generate all possible combinations of parameter values.

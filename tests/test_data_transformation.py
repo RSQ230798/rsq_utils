@@ -18,10 +18,9 @@ class TestDataTransformation(unittest.TestCase):
         # Test with custom batch size
         result = list_batch_split(input_list, batch_size=50)
         self.assertEqual(len(result), 5)
-        for batch in result[:-1]:
+        for batch in result:
             self.assertEqual(len(batch), 50)
-        self.assertEqual(len(result[-1]), 50)
-
+        
     def test_list_batch_split_empty(self):
         """Test list_batch_split with empty list."""
         result = list_batch_split([])
