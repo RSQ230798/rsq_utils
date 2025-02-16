@@ -1,39 +1,40 @@
-"""Time utilities for date manipulation and timing operations."""
 from datetime import datetime, timedelta
 import time
 from typing import List, Optional, Tuple, Union
 
 DateType = Union[str, datetime]
+DateRangeType = List[DateType]
 
-class HistoricalDates:
-    """Generate historical date sequences."""
+# Objects
+class Stopwatch:
+    """
+    Simple stopwatch for measuring elapsed time.
+    """
+    def __init__(self) -> None:
+        self.start_time: Optional[float] = None
+        self.end_time: Optional[float] = None
+        self.time_elapsed: Optional[float] = None
+
+    def start(self) -> None:
+        self.start_time = time.time()
+        self.end_time = None
+        self.time_elapsed = None
+
+    def stop(self) -> None:
+        if self.start_time:
+            self.end_time = time.time()
+            self.time_elapsed = self.end_time - self.start_time
+        else:
+            raise ValueError("Stopwatch not started")
     
-    def generate_historic_dates(self, number_of_previous_days: int) -> List[str]:
-        """Generate a list of dates from today going back a specified number of days.
+    def get_time_elapsed(self) -> float:
+        if self.start_time:
+            current_time = time.time()
+            self.time_elapsed = current_time - self.start_time
+            return self.time_elapsed
         
-        Args:
-            number_of_previous_days: Number of days to go back.
-            
-        Returns:
-            List of dates in YYYY-MM-DD format.
-        """
-        return [transform_date_to_string(datetime.now() - timedelta(days=i)) 
-                for i in range(number_of_previous_days)]
-
-    def generate_dates_from_previous_date(self, previous_date: DateType) -> List[str]:
-        """Generate a list of dates from a previous date up to today.
-        
-        Args:
-            previous_date: Starting date.
-            
-        Returns:
-            List of dates in YYYY-MM-DD format.
-        """
-        previous_date = transform_date_to_datetime(previous_date)
-        current_date = datetime.now()
-        delta = current_date - previous_date
-        return [transform_date_to_string(current_date - timedelta(days=i)) 
-                for i in range(delta.days)]
+        else:
+            raise ValueError("Stopwatch not started")
 
 class Timer:
     """Simple timer for measuring elapsed time."""
@@ -41,48 +42,119 @@ class Timer:
     def __init__(self) -> None:
         self.start_time: Optional[datetime] = None
         self.end_time: Optional[datetime] = None
-        self.time_elapsed: Optional[int] = None
-
-    def start(self) -> None:
-        """Start the timer."""
+    
+    def start(self, length: int) -> None:
         self.start_time = datetime.now()
-
-    def stop(self) -> None:
-        """Stop the timer and calculate elapsed time.
+        self.end_time = self.start_time + timedelta(seconds=length)
         
-        Raises:
-            ValueError: If timer was not started.
-        """
-        if self.start_time:
-            self.end_time = datetime.now()
-            self.time_elapsed = (self.end_time - self.start_time).seconds
+    def get_time_remaining(self) -> int:
+        if self.start_time and self.end_time:
+            time_remaining = (self.end_time - datetime.now()).seconds
+            return max(time_remaining, 0)
         else:
             raise ValueError("Timer not started")
-        
-class BatchTimer(Timer):
-    """Timer with batch processing delay capabilities."""
+
+class DateRange:
+    """
+    Factory that generates DateRange objects. 
+    """
+    def __init__(self) -> None:
+        self.date_range: DateRangeType = []
+        self.start_date: DateType = None
+        self.end_date: DateType = None
+        self.number_of_days: int = None
+        self.begining_point: str = "start_date"
+        self.step: int = 1
+        self.include_edge_dates: bool = True
+
+    def generate_date_range(self, 
+                            start_date: DateType= None, 
+                            end_date: DateType = None, 
+                            number_of_days: int = None,
+                            step: int = 1, 
+                            include_edge_dates: bool = True
+                            ) -> None:
+        """
+        Generate a range of dates based on:
+        1) start date and an end date
+        2) start date and a number of days
+        3) end date and a number of days
+        """
+        self.start_date = start_date
+        self.end_date = end_date
+        self.number_of_days = number_of_days
+        self.step = step
+        self.include_edge_dates = include_edge_dates
+        self.begining_point = None
+
+        self._validate_inputs()
+        self._clean_inputs()
+        self._generate_date_range()
+        self._include_edge_dates()
+
     
-    def __init__(self, time_between_batches: int) -> None:
-        """Initialize with specified delay between batches.
+    def _validate_inputs(self) -> None:
+        if not self.start_date and not self.end_date:
+            raise ValueError("At least one of start_date, end_date, must be provided")
         
-        Args:
-            time_between_batches: Seconds to wait between batches.
-        """
-        self.time_between_batches = time_between_batches
-        super().__init__()
+        elif self.start_date and self.end_date:
+            if self.start_date > self.end_date:
+                raise ValueError("start_date must be before end_date")
 
-    def wait(self) -> None:
-        """Wait remaining time if less than batch interval has passed.
-        
-        Raises:
-            ValueError: If timer was not started or stopped.
-        """
-        if self.start_time is not None and self.end_time is not None and self.time_elapsed is not None:
-            if self.time_elapsed <= self.time_between_batches:
-                time.sleep(self.time_between_batches - self.time_elapsed)
         else:
-            raise ValueError("Timer either not started or ended")
+            if not self.number_of_days:
+                raise ValueError("number_of_days must be provided if only one date is given")
+            else:
+                if self.number_of_days < 0:
+                    raise ValueError("number_of_days must be a positive integer")        
 
+        if self.step < 1 or not isinstance(self.step, int):
+            raise ValueError("step must be a positive integer")
+
+    def _clean_inputs(self) -> None:
+        if self.start_date and self.number_of_days:
+            self.begining_point = "start_date"
+            self.start_date = transform_date_to_datetime(self.start_date)
+            self.end_date = self.start_date + timedelta(days=self.number_of_days)
+
+        elif self.end_date and self.number_of_days:
+            self.begining_point = "end_date"
+            self.end_date = transform_date_to_datetime(self.end_date)
+            self.start_date = self.end_date - timedelta(days=self.number_of_days)
+        
+        elif self.start_date and self.end_date:
+            self.begining_point = "start_date"
+            self.start_date = transform_date_to_datetime(self.start_date)
+            self.end_date = transform_date_to_datetime(self.end_date)
+            self.number_of_days = days_between_dates(self.start_date, self.end_date)
+
+    def _generate_date_range(self) -> DateRangeType:
+        if self.begining_point == "start_date":    
+            date_range = [transform_date_to_string(self.start_date + timedelta(days=d)) for d in range(0, days_between_dates(self.start_date, self.end_date) + 1, self.step)]
+            self.date_range = sort_dates_ascending(date_range)
+
+        elif self.begining_point == "end_date":
+            date_range = [transform_date_to_string(self.end_date - timedelta(days=d)) for d in range(0, days_between_dates(self.start_date, self.end_date) + 1, self.step)]
+            self.date_range = sort_dates_ascending(date_range)
+
+    def _include_edge_dates(self) -> None:
+        if self.include_edge_dates:
+            end_date = transform_date_to_string(self.end_date)
+            start_date = transform_date_to_string(self.start_date)
+
+            if self.date_range[-1] != end_date:
+                self.date_range.append(end_date)
+
+            if self.date_range[0] != start_date:
+                self.date_range.insert(0, start_date)
+
+    def pair_dates(self) -> List[Tuple[str, str]]:
+        if self.date_range:
+            return list(zip(self.date_range[:-1], self.date_range[1:]))
+        else:
+            raise ValueError("Date range not generated")
+    
+# Helper Functions
 def is_date_file(file_name: str) -> bool:
     """Check if a filename represents a date (YYYY-MM-DD format).
     
@@ -98,7 +170,7 @@ def is_date_file(file_name: str) -> bool:
     except ValueError:
         return False
 
-def sort_dates_descending(dates: List[str]) -> List[str]:
+def sort_dates_descending(dates: DateRangeType) -> DateRangeType:
     """Sort dates in descending order.
     
     Args:
@@ -108,6 +180,17 @@ def sort_dates_descending(dates: List[str]) -> List[str]:
         Sorted list of dates.
     """
     return sorted(dates, reverse=True)
+
+def sort_dates_ascending(dates: DateRangeType) -> DateRangeType:
+    """Sort dates in ascending order.
+    
+    Args:
+        dates: List of date strings.
+        
+    Returns:
+        Sorted list of dates.
+    """
+    return sorted(dates)
 
 def find_last_update_file(list_of_file_names: List[str]) -> str:
     """Find most recent date-formatted filename.
@@ -121,7 +204,7 @@ def find_last_update_file(list_of_file_names: List[str]) -> str:
     Raises:
         IndexError: If no date files found.
     """
-    date_files = list(filter(is_date_file, list_of_file_names))
+    date_files: DateRangeType = list(filter(is_date_file, list_of_file_names))
     if not date_files:
         raise IndexError("No date files found")
     date_files = sort_dates_descending(date_files)
@@ -180,60 +263,13 @@ def days_between_dates(date1: DateType, date2: DateType) -> int:
     return abs((date2 - date1).days)
 
 def today() -> str:
-    """Get today's date in YYYY-MM-DD format.
-    
-    Returns:
-        Today's date string.
+    """
+    Get today's date in YYYY-MM-DD format.
     """
     return datetime.now().strftime("%Y-%m-%d")
 
 def yesterday() -> str:
-    """Get yesterday's date in YYYY-MM-DD format.
-    
-    Returns:
-        Yesterday's date string.
+    """
+    Get yesterday's date in YYYY-MM-DD
     """
     return (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-
-class DateRange:
-    """Generate sequences of dates within a range."""
-    
-    def __init__(self, start_date: DateType, end_date: DateType, step: int = 1) -> None:
-        """Initialize with date range parameters.
-        
-        Args:
-            start_date: Starting date.
-            end_date: Ending date.
-            step: Days between each date in sequence.
-        """
-        self.start_date = start_date
-        self.end_date = end_date
-        self.step = step
-        self.date_range = self.__generate_date_range()
-
-    def __generate_date_range(self) -> List[str]:
-        """Generate list of dates in the range.
-        
-        Returns:
-            List of dates in YYYY-MM-DD format.
-        """
-        start_date = transform_date_to_datetime(self.start_date)
-        end_date = transform_date_to_datetime(self.end_date)
-        
-        date_range = [
-            transform_date_to_string(start_date + timedelta(days=i))
-            for i in range(0, days_between_dates(start_date, end_date) + 1, self.step)
-        ]
-
-        if date_range[-1] != transform_date_to_string(end_date):
-            date_range.append(transform_date_to_string(end_date))
-
-        return date_range
-    
-    def pair_dates(self) -> List[Tuple[str, str]]:
-        """Create pairs of consecutive dates from the range.
-        
-        Returns:
-            List of date pairs.
-        """
-        return list(zip(self.date_range[:-1], self.date_range[1:]))

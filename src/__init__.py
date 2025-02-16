@@ -6,7 +6,7 @@ from .data_transformation import list_batch_split
 from .env import load_dotenv
 from .memory import Memory
 from .text import camel_to_snake, convert_keys_to_snake_case
-from .time import Timer, DateRange, HistoricalDates
+from .time import Timer, DateRange, Stopwatch
 from .url import url_encode, generate_parameter_combos
 from .variables import Variables
 
@@ -19,8 +19,8 @@ __all__ = [
     'camel_to_snake',
     'convert_keys_to_snake_case',
     'Timer',
+    'Stopwatch',
     'DateRange',
-    'HistoricalDates',
     'url_encode',
     'generate_parameter_combos',
     'Variables'

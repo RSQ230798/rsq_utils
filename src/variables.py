@@ -152,3 +152,22 @@ class Variables(dict):
                 "type": type(value).__name__,
                 "value": str(value)[:100],
             }
+
+class LocalVariables(Variables):
+    """
+    Local variables container with isolation and summarization capabilities.
+    """
+    pass
+
+class GlobalVariables(Variables):
+    """
+    Global variables container with isolation and summarization capabilities.
+    """
+    pass
+
+class Cache(Variables):
+    """
+    Cache container with isolation and summarization capabilities.
+    """
+    pass
+
