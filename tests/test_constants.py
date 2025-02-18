@@ -1,5 +1,5 @@
 import unittest
-from src.constants import ALPHABET
+from src.rsq_utils.constants import ALPHABET
 
 class TestConstants(unittest.TestCase):
     """Test suite for constants module."""

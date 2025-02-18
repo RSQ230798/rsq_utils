@@ -6,30 +6,23 @@ build-backend = "hatchling.build"
 name = "rsq-utils"
 version = "1.0.0"
 description = "Utility functions for all projects"
-authors = [
-    { name = "Ryan Quigley" }
-]
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "python-dotenv",
-    "requests",
-    "psutil",
-    "pandas",
-    "types-psutil",  # For mypy type checking
-    "pandas-stubs",  # For mypy type checking
+    "colorama>=0.4.6",
+    "numpy>=2.2.3",
+    "pandas>=2.2.3",
+    "pandas-stubs>=2.2.3.241126",
+    "pathlib>=1.0.1",
+    "psutil>=7.0.0",
+    "python-dateutil>=2.9.0",
+    "python-dotenv>=1.0.1",
+    "pytz>=2025.1",
+    "six>=1.17.0"
 ]
-
-[project.optional-dependencies]
-test = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-addopts = "-v --cov=rsq_utils"
 
 [project.urls]
 "Homepage" = "https://github.com/rsq230798/rsq-utils"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rsq_utils"]

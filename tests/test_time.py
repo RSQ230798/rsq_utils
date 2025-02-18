@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 import time
 import unittest
-from src.time import (
+from src.rsq_utils.time import (
     Timer,
     Stopwatch,
     DateRange,

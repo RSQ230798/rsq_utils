@@ -1,6 +1,6 @@
 """Tests for data transformation utilities."""
 import unittest
-from src.data_transformation import list_batch_split
+from src.rsq_utils.data_transformation import list_batch_split
 
 class TestDataTransformation(unittest.TestCase):
     """Test cases for data transformation utilities."""

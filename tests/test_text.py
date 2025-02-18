@@ -1,6 +1,6 @@
 """Tests for text utilities."""
 import unittest
-from src.text import (
+from src.rsq_utils.text import (
     camel_to_snake, 
     convert_keys_to_snake_case
 )

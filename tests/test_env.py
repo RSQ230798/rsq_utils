@@ -3,7 +3,7 @@ import os
 import unittest
 from pathlib import Path
 import tempfile
-from src.env import load_dotenv
+from src.rsq_utils.env import load_dotenv
 import shutil
 
 class TestEnv(unittest.TestCase):
