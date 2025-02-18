@@ -2,7 +2,7 @@
 import types
 import unittest
 import pandas as pd
-from src.variables import Variables
+from src.rsq_utils.variables import Variables
 
 class TestVariables(unittest.TestCase):
     """Test cases for variables utilities."""

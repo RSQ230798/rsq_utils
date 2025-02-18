@@ -1,6 +1,6 @@
 """Tests for URL utilities."""
 import unittest
-from src.url import (
+from src.rsq_utils.url import (
     url_encode, 
     generate_parameter_combos, 
     is_valid_url, 

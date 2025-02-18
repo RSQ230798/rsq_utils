@@ -1,5 +1,5 @@
 import unittest
-from src.paths import clean_path, find_template_params
+from src.rsq_utils.paths import clean_path, find_template_params
 
 class TestFunctions(unittest.TestCase):
     """Test suite for utility functions."""

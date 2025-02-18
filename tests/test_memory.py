@@ -1,6 +1,6 @@
 """Tests for memory utilities."""
 import unittest
-from src.memory import Memory
+from src.rsq_utils.memory import Memory
 
 class TestMemory(unittest.TestCase):
     """Test cases for memory utilities."""
