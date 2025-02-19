@@ -18,7 +18,24 @@ dependencies = [
     "python-dateutil>=2.9.0",
     "python-dotenv>=1.0.1",
     "pytz>=2025.1",
-    "six>=1.17.0"
+    "six>=1.17.0",
+    "types-psutil>=6.1.0.20241221",
+    "types-pytz>=2025.1.0.20250204",
+    "typing_extensions>=4.12.2",
+    "tzdata>=2025.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "exceptiongroup>=1.2.2",
+    "iniconfig>=2.0.0",
+    "mypy>=1.15.0",
+    "mypy-extensions>=1.0.0",
+    "packaging>=24.2",
+    "pluggy>=1.5.0",
+    "pytest>=8.3.4",
+    "tomli>=2.2.1",
+    "types-setuptools>=75.8.0.20250210"
 ]
 
 [project.urls]
