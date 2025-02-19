@@ -1,7 +1,16 @@
 import re
 from typing import List 
 
-def clean_path(path):
+def clean_path(path: str) -> str:
+    """
+    clean a path string by removing leading and trailing slashes and adding a trailing slash if the path does not have an extension.
+
+    Example:
+    >>> clean_path("/api/v1/")
+    "api/v1/"
+    >>> clean_path("/api/v1")
+    "api/v1/"
+    """
     if path.startswith("/"):
         path = path[1:]
     
@@ -27,7 +36,7 @@ def find_template_params(template: str) -> List[str]:
     pattern = r'{([^}]*)}'
     matches = re.finditer(pattern, template)
     
-    params = [match.group(1) for match in matches]
+    params: List[str] = [match.group(1) for match in matches]
     
     return params
 

@@ -1,5 +1,5 @@
 # Constants
-from .constants import ALPHABET
+from .constants import alphabet
 
 # Types
 from .text import JsonType
@@ -29,7 +29,7 @@ from .url import (
 
 __all__ = [
     # Constants
-    'ALPHABET',
+    'alphabet',
     
     # Types
     'JsonType', 'ParamValue', 'ParamDict', 'VariableDict', 'SummaryDict',
