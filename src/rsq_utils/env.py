@@ -1,9 +1,9 @@
 """Environment variable utilities."""
-from typing import Optional
+from typing import Optional, Union
 from pathlib import Path
 from dotenv import load_dotenv as _load_dotenv
 
-def load_dotenv(dotenv_path: Optional[str | Path] = None) -> bool:
+def load_dotenv(dotenv_path: Optional[Union[str, Path]] = None) -> bool:
     """Load environment variables from a .env file.
     
     Args:
